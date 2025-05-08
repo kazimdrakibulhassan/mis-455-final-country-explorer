@@ -171,3 +171,71 @@ function handleSearch() {
       isLoading = false;
   }
 }
+
+async function fetchAllCountries() {
+  const response = await fetch('https://restcountries.com/v3.1/all');
+  if (!response.ok) throw new Error('Failed to fetch country data');
+  return await response.json();
+}
+
+function displayCountriesPage(countries, container, page) {
+  const startIndex = (page - 1) * COUNTRIES_PER_PAGE;
+  const endIndex = Math.min(startIndex + COUNTRIES_PER_PAGE, countries.length);
+  displayCountries(countries.slice(startIndex, endIndex), container);
+}
+
+function displayCountries(countries, container) {
+  container.innerHTML = '';
+  if (countries.length === 0) {
+      container.innerHTML = `
+          <div class="no-results">
+              <i class="fas fa-globe fa-3x"></i>
+              <p>No countries found matching your search.</p>
+              <button class="reset-search-btn"><i class="fas fa-redo"></i> Reset Search</button>
+          </div>`;
+      container.querySelector('.reset-search-btn').addEventListener('click', () => {
+          countryInput.value = '';
+          activeLetterFilter = '';
+          alphabetButtons.querySelector('[data-letter=""]').classList.add('active');
+          displayCountriesPage(allCountries, countryResults, currentPage);
+      });
+      return;
+  }
+
+  countries.forEach((country, index) => {
+      const card = document.createElement('div');
+      card.className = 'country-card';
+      card.style.animationDelay = `${index * 0.05}s`;
+      
+      const name = country.name.common;
+      const flag = country.flags?.png || '';
+      const capital = country.capital?.[0] || 'Unknown';
+      const region = country.region || 'Unknown';
+      const languages = country.languages ? Object.values(country.languages).join(', ') : 'Unknown';
+      const currencies = country.currencies ? 
+          Object.values(country.currencies).map(c => `${c.name} (${c.symbol || ''})`).join(', ') : 'Unknown';
+      const area = country.area ? `${country.area.toLocaleString()} km²` : 'Unknown';
+      
+      card.innerHTML = `
+          <div class="flag-container">
+              <img src="${flag}" alt="${name} flag" loading="lazy">
+          </div>
+          <div class="country-info">
+              <div class="country-header">
+                  <h3 class="country-name">${name}</h3>
+                  <span class="country-code-text">${country.cca2 || country.cca3 || ''}</span>
+              </div>
+              <div class="info-grid">
+                  <div class="info-item"><i class="fas fa-map-marker-alt"></i><span><span class="info-label">Capital:</span> ${capital}</span></div>
+                  <div class="info-item"><i class="fas fa-globe-americas"></i><span><span class="info-label">Region:</span> ${region}</span></div>
+                  <div class="info-item"><i class="fas fa-comments"></i><span><span class="info-label">Languages:</span> ${languages}</span></div>
+                  <div class="info-item"><i class="fas fa-money-bill-wave"></i><span><span class="info-label">Currency:</span> ${currencies}</span></div>
+                  <div class="info-item"><i class="fas fa-ruler-combined"></i><span><span class="info-label">Area:</span> ${area}</span></div>
+              </div>
+              <a class="more-details-link"><i class="fas fa-info-circle"></i> More Details</a>
+          </div>`;
+
+      card.querySelector('.more-details-link').addEventListener('click', () => openCountryModal(country));
+      container.appendChild(card);
+  });
+}
