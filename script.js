@@ -239,3 +239,63 @@ function displayCountries(countries, container) {
       container.appendChild(card);
   });
 }
+
+function createPagination(totalPages, currentPage, callback) {
+  const container = document.getElementById('pagination') || document.createElement('div');
+  container.id = 'pagination';
+  container.className = 'pagination';
+  container.innerHTML = '';
+
+  if (totalPages <= 1) {
+      container.classList.add('hidden');
+      return;
+  }
+
+  const pages = totalPages <= 7 ? 
+      Array.from({length: totalPages}, (_, i) => i + 1) :
+      getComplexPagination(currentPage, totalPages);
+
+  container.innerHTML = `
+      <div class="pagination-info">Page ${currentPage} of ${totalPages}</div>
+      <div class="page-buttons-container">
+          ${currentPage > 1 ? `<button class="pagination-button pagination-prev"><i class="fas fa-chevron-left"></i> Prev</button>` : ''}
+          ${pages.map(page => page === '...' ? 
+              '<span class="pagination-ellipsis">...</span>' : 
+              `<button class="pagination-button${currentPage === page ? ' active' : ''}">${page}</button>`
+          ).join('')}
+          ${currentPage < totalPages ? `<button class="pagination-button pagination-next">Next <i class="fas fa-chevron-right"></i></button>` : ''}
+      </div>`;
+
+  container.querySelectorAll('.pagination-button').forEach(button => {
+      button.addEventListener('click', () => {
+          if (button.classList.contains('pagination-prev')) callback(currentPage - 1);
+          else if (button.classList.contains('pagination-next')) callback(currentPage + 1);
+          else callback(parseInt(button.textContent));
+      });
+  });
+
+  document.getElementById('results-section').appendChild(container);
+}
+
+function getComplexPagination(current, total) {
+  if (current <= 4) return [1, 2, 3, 4, 5, '...', total];
+  if (current >= total - 3) return [1, '...', total-4, total-3, total-2, total-1, total];
+  return [1, '...', current-1, current, current+1, '...', total];
+}
+
+function paginateResults(page) {
+  if (isLoading) return;
+  showLoading(true);
+  isLoading = true;
+  countryResults.classList.add('loading-results');
+  
+  setTimeout(() => {
+      currentPage = page;
+      displayCountriesPage(displayedCountries, countryResults, currentPage);
+      createPagination(totalPages, currentPage, paginateResults);
+      searchResultsHeader.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      countryResults.classList.remove('loading-results');
+      showLoading(false);
+      isLoading = false;
+  }, 300);
+}
