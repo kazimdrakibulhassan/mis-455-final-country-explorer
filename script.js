@@ -50,3 +50,35 @@ async function initialize() {
         isLoading = false;
     }
 }
+
+function createAlphabetButtons() {
+  const allButton = document.createElement('button');
+  allButton.className = 'letter-btn active';
+  allButton.textContent = 'All';
+  allButton.setAttribute('data-letter', '');
+  allButton.addEventListener('click', () => {
+      filterByLetter('');
+      updateActiveButton(allButton);
+  });
+  alphabetButtons.appendChild(allButton);
+
+  ALPHABET.forEach(letter => {
+      const button = document.createElement('button');
+      button.className = 'letter-btn';
+      button.textContent = letter;
+      button.setAttribute('data-letter', letter);
+      button.addEventListener('click', () => {
+          filterByLetter(letter);
+          updateActiveButton(button);
+      });
+      alphabetButtons.appendChild(button);
+  });
+}
+
+function updateActiveButton(clickedButton) {
+  const buttons = alphabetButtons.querySelectorAll('.letter-btn');
+  buttons.forEach(btn => btn.classList.remove('active'));
+  
+  clickedButton.classList.add('active');
+}
+
