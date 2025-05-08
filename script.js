@@ -299,3 +299,95 @@ function paginateResults(page) {
       isLoading = false;
   }, 300);
 }
+
+function openCountryModal(country) {
+  modalFlag.src = country.flags?.png || '';
+  modalFlag.alt = `${country.name.common} flag`;
+  modalTitle.textContent = country.name.common;
+  modalBody.innerHTML = '';
+
+  const sections = [
+      {
+          title: 'Basic Information',
+          icon: 'info-circle',
+          items: [
+              ['Official Name', country.name.official],
+              ['Capital', country.capital?.[0]],
+              ['Population', country.population?.toLocaleString()],
+              ['Country Code', country.cca2 || country.cca3],
+              ['Independent', country.independent ? 'Yes' : 'No'],
+              ['UN Member', country.unMember ? 'Yes' : 'No']
+          ]
+      },
+      {
+          title: 'Geography',
+          icon: 'map',
+          items: [
+              ['Region', country.region],
+              ['Subregion', country.subregion],
+              ['Area', country.area ? `${country.area.toLocaleString()} km²` : 'N/A'],
+              ['Borders', country.borders?.length ? country.borders.join(', ') : 'None'],
+              ['Latitude/Longitude', country.latlng ? `${country.latlng[0]}, ${country.latlng[1]}` : 'N/A']
+          ]
+      },
+      {
+          title: 'Culture & Economy',
+          icon: 'globe',
+          items: [
+              ['Languages', Object.values(country.languages || {}).join(', ')],
+              ['Currencies', Object.values(country.currencies || {}).map(c => `${c.name} (${c.symbol})`).join(', ')],
+              ['Driving Side', country.car?.side?.charAt(0).toUpperCase() + country.car?.side?.slice(1) || 'N/A']
+          ]
+      },
+      {
+          title: 'Communication',
+          icon: 'phone',
+          items: [
+              ['Calling Code', country.idd?.root ? `${country.idd.root}${country.idd.suffixes?.[0] || ''}` : 'N/A'],
+              ['Timezones', country.timezones?.join(', ') || 'N/A'],
+              ['TLD', country.tld?.join(', ') || 'N/A']
+          ]
+      }
+  ];
+
+  sections.forEach(section => {
+      const sectionEl = document.createElement('div');
+      sectionEl.className = 'modal-section';
+      
+      sectionEl.innerHTML = `
+          <h3 class="modal-section-title">
+              <i class="fas fa-${section.icon}"></i> ${section.title}
+          </h3>
+          <div class="modal-info-grid">
+              ${section.items.map(([label, value]) => `
+                  <div class="modal-info-item">
+                      <span class="modal-info-label">${label}</span>
+                      <span class="modal-info-value">${value || 'N/A'}</span>
+                  </div>
+              `).join('')}
+          </div>
+      `;
+      
+      modalBody.appendChild(sectionEl);
+  });
+
+  // Add map link if coordinates are available
+  if (country.latlng && country.latlng.length >= 2) {
+      const mapLink = document.createElement('a');
+      mapLink.href = `https://www.google.com/maps/search/?api=1&query=${country.latlng[0]},${country.latlng[1]}`;
+      mapLink.target = '_blank';
+      mapLink.rel = 'noopener noreferrer';
+      mapLink.className = 'more-details-link';
+      mapLink.innerHTML = '<i class="fas fa-map-marker-alt"></i> View on Map';
+      modalBody.querySelector('.modal-section:nth-child(2) .modal-info-grid').appendChild(mapLink);
+  }
+
+  modalOverlay.classList.add('active');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeModal() {
+  modalOverlay.classList.remove('active');
+  document.body.style.overflow = '';
+}
+
