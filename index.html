@@ -7,4 +7,87 @@
 <body>
   
 </body>
+</html><!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Country Explorer | Find Information About Countries</title>
+    <meta name="description" content="Explore information about countries around the world including capitals, populations, languages, and more.">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="icon" href="https://cdn-icons-png.flaticon.com/512/52/52822.png" type="image/png">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1><i class="fas fa-globe-americas"></i> Country Explorer</h1>
+            <p class="tagline">Discover information about countries around the world</p>
+        </div>
+    </header>
+
+    <section class="search-section">
+        <div class="container">
+            <form id="search-form">
+                <div class="search-container">
+                    <input type="text" id="country-input" placeholder="Enter country name..." required>
+                    <button type="submit"><i class="fas fa-search"></i> Search</button>
+                </div>
+            </form>
+            
+            <div class="alphabet-filter">
+                <div class="filter-label">Filter by first letter:</div>
+                <div class="alphabet-buttons" id="alphabet-buttons">
+                    <!-- Alphabet buttons will be added here via JavaScript -->
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <main class="container">
+        <section id="results-section">
+            <div id="loading" class="hidden">
+                <div class="spinner"></div>
+                <p>Loading country information...</p>
+            </div>
+            <div id="error-message" class="hidden"></div>
+            <div id="search-results-header">
+                <h2 class="section-title">
+                    <i class="fas fa-globe"></i> All Countries 
+                    <span class="results-count"></span>
+                </h2>
+            </div>
+            <div id="country-results" class="country-grid"></div>
+            <div id="pagination" class="pagination"></div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2025 Country Explorer | Using <a href="https://restcountries.com/" target="_blank" rel="noopener">REST Countries API</a></p>
+        </div>
+    </footer>
+
+    <!-- Modal for country details -->
+    <div id="countryModal" class="modal-overlay">
+        <div class="modal-container">
+            <div class="modal-header">
+                <img id="modalFlag" class="modal-flag" src="" alt="Country flag">
+                <h2 id="modalTitle" class="modal-title">Country Name</h2>
+                <button id="modalClose" class="modal-close" aria-label="Close modal">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div id="modalBody" class="modal-body">
+                <!-- Modal content will be dynamically inserted here -->
+            </div>
+            <div class="modal-footer">
+                <p class="modal-footer-text">Data provided by <a href="https://restcountries.com/" target="_blank" rel="noopener noreferrer">REST Countries API</a></p>
+            </div>
+        </div>
+    </div>
+    
+    <script src="script.js"></script>
+</body>
 </html>
