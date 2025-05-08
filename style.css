@@ -1,0 +1,87 @@
+/* Global Styles */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+:root {
+  --primary-color: #2c3e50;
+  --secondary-color: #3498db;
+  --accent-color: #e74c3c;
+  --light-bg: #f8f9fa;
+  --dark-text: #2c3e50;
+  --light-text: #ecf0f1;
+  --card-shadow: 0 10px 20px rgba(0, 0, 0, 0.08);
+  --hover-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+  --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+  --gradient-primary: linear-gradient(135deg, #2c3e50, #3498db);
+  --gradient-secondary: linear-gradient(135deg, #3498db, #2ecc71);
+  --border-radius: 12px;
+  --card-border-radius: 16px;
+}
+
+body {
+  font-family: 'Poppins', sans-serif;
+  line-height: 1.6;
+  color: var(--dark-text);
+  background: var(--light-bg) linear-gradient(to bottom, #f8f9fa, #e9ecef) fixed;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+/* Header Styles */
+header {
+  background: var(--gradient-primary);
+  color: var(--light-text);
+  padding: 40px 0;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+  position: relative;
+  overflow: hidden;
+  margin-bottom: 0;
+  width: 100%;
+  clip-path: polygon(0 0, 100% 0, 100% 85%, 0 100%);
+  min-height: 200px;
+  display: flex;
+  align-items: center;
+}
+
+header::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: url('https://cdn.pixabay.com/photo/2021/09/02/16/48/world-map-6593844_1280.jpg') center/cover;
+  opacity: 0.1;
+}
+
+header .container {
+  position: relative;
+  z-index: 1;
+  text-align: center;
+}
+
+header h1 {
+  font-size: 2.8rem;
+  font-weight: 700;
+  margin-bottom: 15px;
+  text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.3);
+  letter-spacing: 0.5px;
+  animation: fadeInDown 1s ease-out;
+}
+
+.tagline {
+  font-size: 1.2rem;
+  opacity: 0.9;
+  max-width: 600px;
+  margin: 0 auto;
+  animation: fadeInUp 1s ease-out;
+  text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.2);
+}
+
+header i {
+  margin-right: 10px;
+}
