@@ -82,3 +82,92 @@ function updateActiveButton(clickedButton) {
   clickedButton.classList.add('active');
 }
 
+function filterByLetter(letter) {
+  showLoading(true);
+  activeLetterFilter = letter;
+  currentPage = 1;
+  countryInput.value = '';
+  
+  if (!letter) {
+      displayedCountries = [...allCountries];
+      updateResultsCount(allCountries.length);
+      searchResultsHeader.querySelector('.section-title i').className = 'fas fa-globe';
+      totalPages = Math.ceil(allCountries.length / COUNTRIES_PER_PAGE);
+      displayCountriesPage(allCountries, countryResults, currentPage);
+      createPagination(totalPages, currentPage, paginateResults);
+      showLoading(false);
+      return;
+  }
+
+  const filteredCountries = allCountries.filter(country => 
+      country.name.common.toLowerCase().startsWith(letter.toLowerCase())
+  );
+  
+  displayedCountries = filteredCountries;
+  updateResultsCount(filteredCountries.length);
+  searchResultsHeader.querySelector('.section-title i').className = 'fas fa-filter';
+  
+  if (filteredCountries.length === 0) {
+      showError(`No countries found starting with "${letter}"`);
+      countryResults.innerHTML = '';
+      hidePagination();
+  } else {
+      hideError();
+      totalPages = Math.ceil(filteredCountries.length / COUNTRIES_PER_PAGE);
+      displayCountriesPage(filteredCountries, countryResults, currentPage);
+      createPagination(totalPages, currentPage, paginateResults);
+  }
+  showLoading(false);
+}
+
+function handleSearch() {
+  if (isLoading) return;
+  const searchTerm = countryInput.value.trim();
+  
+  if (activeLetterFilter && searchTerm) {
+      activeLetterFilter = '';
+      alphabetButtons.querySelector('[data-letter=""]').classList.add('active');
+  }
+  
+  if (!searchTerm && !activeLetterFilter) {
+      displayedCountries = [...allCountries];
+      updateResultsCount(allCountries.length);
+      currentPage = 1;
+      totalPages = Math.ceil(allCountries.length / COUNTRIES_PER_PAGE);
+      displayCountriesPage(allCountries, countryResults, currentPage);
+      createPagination(totalPages, currentPage, paginateResults);
+      return;
+  }
+  
+  if (activeLetterFilter && !searchTerm) return;
+  
+  try {
+      showLoading(true);
+      isLoading = true;
+      hideError();
+      countryResults.classList.add('loading-results');
+      
+      const results = allCountries.filter(country => 
+          country.name.common.toLowerCase().startsWith(searchTerm.toLowerCase())
+      );
+      
+      if (results.length === 0) throw new Error(`No countries found starting with "${searchTerm}"`);
+      
+      displayedCountries = results;
+      currentPage = 1;
+      totalPages = Math.ceil(results.length / COUNTRIES_PER_PAGE);
+      updateResultsCount(results.length);
+      searchResultsHeader.querySelector('.section-title i').className = 'fas fa-search';
+      displayCountriesPage(results, countryResults, currentPage);
+      totalPages > 1 ? createPagination(totalPages, currentPage, paginateResults) : hidePagination();
+      
+      countryResults.classList.remove('loading-results');
+      showLoading(false);
+      isLoading = false;
+  } catch (error) {
+      showError(error.message);
+      console.error(error);
+      showLoading(false);
+      isLoading = false;
+  }
+}
