@@ -391,3 +391,19 @@ function closeModal() {
   document.body.style.overflow = '';
 }
 
+function updateResultsCount(count) { resultsCount.textContent = `(${count} countries)`; }
+function showLoading(show) { loadingElement.classList[show ? 'remove' : 'add']('hidden'); }
+function showError(message) { errorMessage.textContent = message; errorMessage.classList.remove('hidden'); }
+function hideError() { errorMessage.classList.add('hidden'); errorMessage.textContent = ''; }
+function hidePagination() { const pagination = document.getElementById('pagination'); if (pagination) pagination.classList.add('hidden'); }
+function debounce(fn, delay) { let timeout; return function(...args) { clearTimeout(timeout); timeout = setTimeout(() => fn.apply(this, args), delay); }; }
+
+function handleScroll() {
+    const currentScrollPosition = window.scrollY;
+    if (currentScrollPosition > 10) {
+        searchSection.classList.add('sticky');
+    } else {
+        searchSection.classList.remove('sticky');
+    }
+    lastScrollPosition = currentScrollPosition;
+}
